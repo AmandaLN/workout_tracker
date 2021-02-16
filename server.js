@@ -9,8 +9,10 @@ const app = express();
 
 app.use(logger("dev"));
 
+// middleware
 app.use(express.urlencoded({ extended: true}));
 app.use(express.static("public"));
+app.use(express.json());
 
 
 Mongoose.connect("mongodb://localhost/workout", {

@@ -1,8 +1,12 @@
+// combinded middleware and route
 const router = require('express').Router();
 const Workout = require('../models/workout');
-//Get Route
+
+//get route
 router.get('/api/workouts', (req, res) => {
-    Workout.find({})
+    Workout.aggregate([{
+        $addFields: {totalDuration: {$sum: "$exercises.duration"}}
+    }])
     .then(data => {
       res.json(data);
     })
@@ -10,6 +14,8 @@ router.get('/api/workouts', (req, res) => {
       res.json(err);
     });
 });
+
+// updating one by id
 router.put("/api/workouts/:id", (req, res) => {
     console.log(req.body)
    Workout.findOneAndUpdate(
@@ -23,12 +29,16 @@ router.put("/api/workouts/:id", (req, res) => {
             }
         },    
         { new: true })
+
       .then(dbWorkout => {
           res.json(dbWorkout);
+
       }).catch(err => {
         res.json(err);
       });
 });
+
+// creating the workout
 router.post('/api/workouts', (req, res) => {
     Workout.create({})
     .then(data => {
@@ -38,8 +48,14 @@ router.post('/api/workouts', (req, res) => {
       res.json(err);
     });
 });
+
+// finds last 7 entries
 router.get('/api/workouts/range', (req, res) => {
-    Workout.find({}).limit(7)
+     Workout.aggregate([
+        {$addFields: {totalDuration: {$sum: "$exercises.duration"}}}
+        
+    ]).limit(7)
+
     .then(data => {
       res.json(data);
     })
