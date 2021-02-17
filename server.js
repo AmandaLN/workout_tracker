@@ -2,7 +2,7 @@ const express = require("express");
 const Mongoose = require("mongoose");
 const logger = require("morgan");
 
-const PORT = 3002;
+const PORT = 27017;
 
 
 const app = express();
